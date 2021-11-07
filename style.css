@@ -4,9 +4,11 @@
 }
 
 body {
-   background-color: #000;
    width: 100vw;
    height: 100vh;
+   background: url("img/bg.jpg") no-repeat;
+   background-size: cover;
+   background-position: 0px -43px;
 }
 
 .canvas-container {

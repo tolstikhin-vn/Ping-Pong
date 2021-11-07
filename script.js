@@ -9,6 +9,11 @@ const ctxUp = cnvsUp.getContext('2d');
 const platformWidth = 15;
 const platformHeight = 120;
 
+const hitSound = new Audio('sounds/hitSound.mp3');
+const userGoalSound = new Audio('sounds/userGoalSound.mp3');
+const aiGoalSound = new Audio('sounds/aiGoalSound.mp3');
+const wallHitSound = new Audio('sounds/wallHitSound.mp3');
+
 const player = {
     x: 10,
     y: cnvsLow.height / 2 - platformHeight / 2,
@@ -82,7 +87,7 @@ function drawField() {
     ctxLow.lineWidth = 2;
     ctxLow.moveTo(cnvsLow.width / 2, 0);
     ctxLow.lineTo(cnvsLow.width / 2, cnvsLow.height);
-    ctxLow.setLineDash([6, 6])
+    ctxLow.setLineDash([10, 8])
     ctxLow.stroke();
     ctxLow.setLineDash([]);
 
@@ -92,7 +97,7 @@ function drawField() {
     ctxLow.fillText('ИГРОК', cnvsLow.width / 8, cnvsLow.height / 2.5);
     ctxLow.fillText('1', cnvsLow.width / 4.4, cnvsLow.height - cnvsLow.height / 2.5 + 80);
     ctxLow.fillText('ИГРОК', cnvsLow.width / 1.6, cnvsLow.height / 2.5);
-    ctxLow.fillText('2', cnvsLow.width / 1.39, (cnvsLow.height / 3) * 2.2);
+    ctxLow.fillText('2', cnvsLow.width / 1.38, (cnvsLow.height / 3) * 2.2);
 }
 
 // Отрисовка платформ
@@ -117,7 +122,7 @@ function drawBall(x, y, radius, color) {
     ctxUp.fill();
 }
 
-// Определение позиции курчора мыши
+// Определение позиции курсора мыши
 function getMousePos(evt) {
     let rect = cnvsLow.getBoundingClientRect();
     if (player.y <= 0 && ((evt.clientY - rect.top) <= player.height / 2)) {
@@ -128,12 +133,18 @@ function getMousePos(evt) {
 }
 
 // Возврат игровых объектов в начальные положения
-function reset() {
+function reset(scored) {
     ball.x = cnvsLow.width / 2;
     ball.y = cnvsLow.height / 2;
     player.y = cnvsLow.height / 2 - platformHeight / 2;
-    ai.y = cnvsLow.height / 2 - platformHeight / 2;
-    ball.velocityX = -ball.velocityX;
+    player.y = cnvsLow.height / 2 - platformHeight / 2;
+    if (scored) {
+        ball.velocityX = -5;
+        ball.velocityY = -5;
+    } else {
+        ball.velocityX = 5;
+        ball.velocityY = 5;
+    }
     ball.speed = 7;
 }
 
@@ -160,15 +171,20 @@ function update() {
         player.y += 12;
     }
 
+    let playerScore = false;
     if (ball.x - ball.radius < 0) {
+        aiGoalSound.play();
         ai.score++;
-        reset();
+        reset(playerScore);
     } else if (ball.x > cnvsLow.width) {
+        userGoalSound.play();
         player.score++;
-        reset();
+        playerScore = true;
+        reset(playerScore);
     }
 
     if (ball.y + ball.radius >= cnvsLow.height || ball.y - ball.radius <= 0) {
+        wallHitSound.play();
         ball.velocityY = -ball.velocityY;
     }
 
@@ -180,7 +196,7 @@ function update() {
     let curPlayer = (ball.x < cnvsLow.width / 2) ? player : ai;
 
     if (collisionDetect(curPlayer, ball)) {
-
+        hitSound.play();
         let collidePoint = (ball.y - (curPlayer.y + curPlayer.height / 2));
 
         collidePoint = collidePoint / (curPlayer.height / 2);

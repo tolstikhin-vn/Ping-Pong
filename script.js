@@ -34,7 +34,40 @@ const ball = {
     velocityY: 5,
 }
 
-cnvsUp.addEventListener("mousemove", getMousePos);
+function getMousePos(evt) {
+    let rect = cnvsLow.getBoundingClientRect();
+    if (player.y <= 0 && ((evt.clientY - rect.top) <= player.height / 2)) {
+        player.y = 0;
+    } else if (player.y >= cnvsLow.height - player.height && ((evt.clientY - rect.top) >= cnvsLow.height - player.height / 2)) {
+        player.y = cnvsLow.height - player.height;
+    } else {
+        player.y = evt.clientY - rect.top - player.height / 2;
+    }
+}
+
+let upArrowPressedByPlayer = false;
+let downArrowPressedByPlayer = false;
+
+// Включение клавиш "W", "S"
+function keyDownHandler(event) {
+    console.log(event.keyCode);
+    switch (event.keyCode) {
+        case 87:
+            upArrowPressedByPlayer = true;
+        case 83:
+            downArrowPressedByPlayer = true;
+    }
+}
+
+// Отключение клавиш "W", "S"
+function keyUpHandler(event) {
+    switch (event.keyCode) {
+        case 87:
+            upArrowPressedByPlayer = false;
+        case 83:
+            downArrowPressedByPlayer = false;
+    }
+}
 
 function drawField() {
     ctxLow.strokeStyle = '#fff';
@@ -87,7 +120,11 @@ function drawBall(x, y, radius, color) {
 // Определение позиции курчора мыши
 function getMousePos(evt) {
     let rect = cnvsLow.getBoundingClientRect();
-    player.y = evt.clientY - rect.top - player.height / 2;
+    if (player.y <= 0 && ((evt.clientY - rect.top) <= player.height / 2)) {
+        player.y = 0;
+    } else if (player.y >= cnvsLow.height - player.height && ((evt.clientY - rect.top) >= cnvsLow.height - player.height / 2)) {
+        player.y = cnvsLow.height - player.height;
+    } else player.y = evt.clientY - rect.top - player.height / 2;
 }
 
 // Возврат игровых объектов в начальные положения
@@ -117,6 +154,12 @@ function collisionDetect(curPlayer, ball) {
 
 // Изменение игрового процесса
 function update() {
+    if (upArrowPressedByPlayer && player.y > 0) {
+        player.y -= 12;
+    } else if (downArrowPressedByPlayer && (player.y < cnvsLow.height - player.height)) {
+        player.y += 12;
+    }
+
     if (ball.x - ball.radius < 0) {
         ai.score++;
         reset();
@@ -172,6 +215,10 @@ function loop() {
     render();
     requestAnimationFrame(loop);
 }
+
+addEventListener('mousemove', getMousePos);
+addEventListener('keydown', keyDownHandler);
+addEventListener('keyup', keyUpHandler);
 
 drawField();
 

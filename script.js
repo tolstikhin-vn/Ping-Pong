@@ -83,7 +83,7 @@ function drawField() {
     ctxLow.lineTo(cnvsLow.width, cnvsLow.height / 2);
     ctxLow.stroke();
 
-    // Вертиклаьная линия "сетка"
+    // Вертикальная линия "сетка"
     ctxLow.lineWidth = 2;
     ctxLow.moveTo(cnvsLow.width / 2, 0);
     ctxLow.lineTo(cnvsLow.width / 2, cnvsLow.height);

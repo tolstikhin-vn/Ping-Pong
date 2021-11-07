@@ -1,0 +1,19 @@
+* {
+   padding: 0;
+   margin: 0;
+}
+
+body {
+   background-color: #000;
+}
+
+#layer {
+   background-color: #12411f;
+   border: 8px solid white;
+   position: absolute;
+   margin: auto;
+   top: 0;
+   right: 0;
+   left: 0;
+   bottom: 0;
+}

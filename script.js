@@ -6,8 +6,14 @@ const cnvsUp = document.getElementById('layer2');
 
 const ctxUp = cnvsUp.getContext('2d');
 
+const coordX = 10;
 const platformWidth = 15;
 const platformHeight = 120;
+const defaultscore = 0;
+const ballRadius = 12;
+const ballSpeed = 7;
+const defVelosityX = 5;
+const defVelosityY = 5;
 
 const hitSound = new Audio('sounds/hitSound.mp3');
 const userGoalSound = new Audio('sounds/userGoalSound.mp3');
@@ -15,28 +21,28 @@ const aiGoalSound = new Audio('sounds/aiGoalSound.mp3');
 const wallHitSound = new Audio('sounds/wallHitSound.mp3');
 
 const playerOne = {
-    x: 10,
+    x: coordX,
     y: cnvsLow.height / 2 - platformHeight / 2,
     width: platformWidth,
     height: platformHeight,
-    score: 0,
+    score: defaultscore,
 }
 
 const playerTwo = {
-    x: cnvsLow.width - (platformWidth + 10),
+    x: cnvsLow.width - (platformWidth + coordX),
     y: cnvsLow.height / 2 - platformHeight / 2,
     width: platformWidth,
     height: platformHeight,
-    score: 0,
+    score: defaultscore,
 }
 
 const ball = {
     x: cnvsLow.width / 2,
     y: cnvsLow.height / 2,
-    radius: 12,
-    speed: 7,
-    velocityX: 5,
-    velocityY: 5,
+    radius: ballRadius,
+    speed: ballSpeed,
+    velocityX: defVelosityX,
+    velocityY: defVelosityY,
 }
 
 function getMousePos(evt) {
@@ -59,11 +65,8 @@ function keyDownHandlerForTwo(event) {
     switch (event.keyCode) {
         case 38:
             upArrowPressedByPlayerTwo = true;
-            break;
         case 40:
             downArrowPressedByPlayerTwo = true;
-            break;
-
     }
 }
 
@@ -72,10 +75,8 @@ function keyUpHandlerForTwo(event) {
     switch (event.keyCode) {
         case 38:
             upArrowPressedByPlayerTwo = false;
-            break;
         case 40:
             downArrowPressedByPlayerTwo = false;
-            break;
     }
 }
 
@@ -84,10 +85,8 @@ function keyDownHandlerForOne(event) {
     switch (event.keyCode) {
         case 87:
             upArrowPressedByPlayerOne = true;
-            break;
         case 83:
             downArrowPressedByPlayerOne = true;
-            break;
     }
 }
 
@@ -96,10 +95,8 @@ function keyUpHandlerForOne(event) {
     switch (event.keyCode) {
         case 87:
             upArrowPressedByPlayerOne = false;
-            break;
         case 83:
             downArrowPressedByPlayerOne = false;
-            break;
     }
 }
 
@@ -162,19 +159,23 @@ function getMousePos(evt) {
 }
 
 // Возврат игровых объектов в начальные положения
-function reset(scored) {
+function reset(scored, resetScore) {
     ball.x = cnvsLow.width / 2;
     ball.y = cnvsLow.height / 2;
     playerOne.y = cnvsLow.height / 2 - platformHeight / 2;
     playerTwo.y = cnvsLow.height / 2 - platformHeight / 2;
-    if (scored) {
-        ball.velocityX = -5;
-        ball.velocityY = -5;
-    } else {
-        ball.velocityX = 5;
-        ball.velocityY = 5;
+    if (resetScore) {
+        playerOne.score = defaultscore;
+        playerTwo.score = defaultscore;
     }
-    ball.speed = 7;
+    if (scored) {
+        ball.velocityX = -defVelosityX;
+        ball.velocityY = -defVelosityX;
+    } else {
+        ball.velocityX = defVelosityX;
+        ball.velocityY = defVelosityX;
+    }
+    ball.speed = ballSpeed;
 }
 
 // Проверка столкновения мяча с игроками
@@ -192,6 +193,8 @@ function collisionDetect(curPlayer, ball) {
     return ball.left < curPlayer.right && ball.top < curPlayer.bottom && ball.right > curPlayer.left && ball.bottom > curPlayer.top;
 }
 
+let resetScore, playerScore = false;
+
 // Обновление изменений игрового процесса
 function update() {
     if (upArrowPressedByPlayerOne && playerOne.y > 0) {
@@ -206,16 +209,17 @@ function update() {
         playerTwo.y += 8;
     }
 
-    let playerScore = false;
+    resetScore = false;
+
     if (ball.x - ball.radius < 0) {
         aiGoalSound.play();
         playerTwo.score++;
-        reset(playerScore);
+        reset(playerScore, resetScore);
     } else if (ball.x > cnvsLow.width) {
         userGoalSound.play();
         playerOne.score++;
         playerScore = true;
-        reset(playerScore);
+        reset(playerScore, resetScore);
     }
 
     if (ball.y + ball.radius >= cnvsLow.height || ball.y - ball.radius <= 0) {
@@ -244,7 +248,7 @@ function update() {
         ball.velocityX = direction * ball.speed * Math.cos(angleRad);
         ball.velocityY = ball.speed * Math.sin(angleRad);
 
-        ball.speed += 5;
+        ball.speed += 0.3;
     }
 }
 
@@ -276,32 +280,30 @@ function movementForPlayers(twoPlayersPlay) {
     if (twoPlayersPlay) {
         addEventListener('keydown', keyDownHandlerForTwo);
         addEventListener('keyup', keyUpHandlerForTwo);
-
         removeEventListener('mousemove', getMousePos);
     } else {
         addEventListener('mousemove', getMousePos);
-
         removeEventListener('keydown', keyDownHandlerForTwo);
         removeEventListener('keyup', keyUpHandlerForTwo);
     }
 }
 
-let twoPlayersPlay;
-
 const twPlrsBttn = document.querySelector('#two-players-button');
 const aiBttn = document.querySelector('#ai-button');
+
+let twoPlayersPlay;
 
 addEventListener('keydown', keyDownHandlerForOne);
 addEventListener('keyup', keyUpHandlerForOne);
 
+// Обработка нажатия кнопки "Два игрока"
 twPlrsBttn.onclick = function () {
     twPlrsBttn.setAttribute('disabled', true);
     aiBttn.removeAttribute('disabled');
     twoPlayersPlay = true;
-    playerOne.score = 0;
-    playerTwo.score = 0;
+    resetScore = true;
     cancelAnimationFrame(myAnim);
-    reset();
+    reset(playerScore, resetScore);
     movementForPlayers(twoPlayersPlay);
     loop();
 }
@@ -311,12 +313,12 @@ aiBttn.onclick = function () {
     aiBttn.setAttribute('disabled', true);
     twPlrsBttn.removeAttribute('disabled');
     twoPlayersPlay = false;
-    playerOne.score = 0;
-    playerTwo.score = 0;
+    resetScore = true;
     cancelAnimationFrame(myAnim);
-    reset();
+    reset(playerScore, resetScore);
     movementForPlayers(twoPlayersPlay);
     loop();
 }
 
+// Отрисовка игрового поля
 drawField();

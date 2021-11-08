@@ -11,6 +11,20 @@ body {
    background-position: 0px -43px;
 }
 
+.button-panel {
+   display: flex;
+   width: 1016px;
+   height: 50px;
+   margin: 0 auto;
+   padding: 8px;
+}
+
+.button-panel * {
+   width: 100%;
+   height: 100%;
+   font-size: 30px;
+}
+
 .canvas-container {
    width: 1016px;
    height: 616px;

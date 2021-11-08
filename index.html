@@ -6,13 +6,24 @@
       <script src="script.js" defer></script>
       <title>Ping Pong</title>
    </head>
+
    <body>
       <div class="button-panel">
-         <div>
-            <button type="button" id="two-players-button">Два игрока</button>
-         </div>
-         <div>
-            <button type="button" id="ai-button">Одиночная игра</button>
+         <button type="button" id="two-players-button">Два игрока</button>
+         <button type="button" id="ai-button">Одиночная игра</button>
+         <button type="button" id="restart">Рестарт</button>
+         <button type="button" id="stop-start">Стоп</button>
+         <div class="control-panel">
+            <label for="num" id="num-control-id"
+               >ДО СКОЛЬКИ ГОЛОВ ИГРАЕМ?</label
+            >
+            <input
+               type="number"
+               class="num-control"
+               id="num"
+               min="1"
+               placeholder="11"
+            />
          </div>
       </div>
       <div class="canvas-container">
@@ -20,6 +31,12 @@
          <canvas id="layer1" width="1000" height="600"></canvas>
          <!-- canvas для отрисовки игровых объектов -->
          <canvas id="layer2" width="1000" height="600"></canvas>
+      </div>
+      <div class="color-panel">
+         <label for="сolor-one" id="label-one">Цвет 1 игрока</label>
+         <input type="color" value="#FFFFFF" id="color-one" />
+         <label for="сolor-two" id="label-two">Цвет 2 игрока</label>
+         <input type="color" value="#FFFFFF" id="color-two" />
       </div>
    </body>
 </html>

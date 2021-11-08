@@ -9,7 +9,7 @@ const ctxUp = cnvsUp.getContext('2d');
 const coordX = 10;
 const platformWidth = 15;
 const platformHeight = 120;
-const defaultscore = 0;
+const defaultScore = 0;
 const ballRadius = 12;
 const ballSpeed = 7;
 const defVelosityX = 5;
@@ -25,7 +25,7 @@ const playerOne = {
     y: cnvsLow.height / 2 - platformHeight / 2,
     width: platformWidth,
     height: platformHeight,
-    score: defaultscore,
+    score: defaultScore,
 }
 
 const playerTwo = {
@@ -33,7 +33,7 @@ const playerTwo = {
     y: cnvsLow.height / 2 - platformHeight / 2,
     width: platformWidth,
     height: platformHeight,
-    score: defaultscore,
+    score: defaultScore,
 }
 
 const ball = {
@@ -45,14 +45,14 @@ const ball = {
     velocityY: defVelosityY,
 }
 
-function getMousePos(evt) {
+function getMousePos(event) {
     let rect = cnvsLow.getBoundingClientRect();
-    if (playerOne.y <= 0 && ((evt.clientY - rect.top) <= playerOne.height / 2)) {
+    if (playerOne.y <= 0 && ((event.clientY - rect.top) <= playerOne.height / 2)) {
         playerOne.y = 0;
-    } else if (playerOne.y >= cnvsLow.height - playerOne.height && ((evt.clientY - rect.top) >= cnvsLow.height - playerOne.height / 2)) {
+    } else if (playerOne.y >= cnvsLow.height - playerOne.height && ((event.clientY - rect.top) >= cnvsLow.height - playerOne.height / 2)) {
         playerOne.y = cnvsLow.height - playerOne.height;
     } else {
-        playerOne.y = evt.clientY - rect.top - playerOne.height / 2;
+        playerOne.y = event.clientY - rect.top - playerOne.height / 2;
     }
 }
 
@@ -149,13 +149,13 @@ function drawBall(x, y, radius, color) {
 }
 
 // Определение позиции курсора мыши
-function getMousePos(evt) {
+function getMousePos(event) {
     let rect = cnvsLow.getBoundingClientRect();
-    if (playerOne.y <= 0 && ((evt.clientY - rect.top) <= playerOne.height / 2)) {
+    if (playerOne.y <= 0 && ((event.clientY - rect.top) <= playerOne.height / 2)) {
         playerOne.y = 0;
-    } else if (playerOne.y >= cnvsLow.height - playerOne.height && ((evt.clientY - rect.top) >= cnvsLow.height - playerOne.height / 2)) {
+    } else if (playerOne.y >= cnvsLow.height - playerOne.height && ((event.clientY - rect.top) >= cnvsLow.height - playerOne.height / 2)) {
         playerOne.y = cnvsLow.height - playerOne.height;
-    } else playerOne.y = evt.clientY - rect.top - playerOne.height / 2;
+    } else playerOne.y = event.clientY - rect.top - playerOne.height / 2;
 }
 
 // Возврат игровых объектов в начальные положения
@@ -165,8 +165,8 @@ function reset(scored, resetScore) {
     playerOne.y = cnvsLow.height / 2 - platformHeight / 2;
     playerTwo.y = cnvsLow.height / 2 - platformHeight / 2;
     if (resetScore) {
-        playerOne.score = defaultscore;
-        playerTwo.score = defaultscore;
+        playerOne.score = defaultScore;
+        playerTwo.score = defaultScore;
     }
     if (scored) {
         ball.velocityX = -defVelosityX;

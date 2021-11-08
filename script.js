@@ -14,7 +14,7 @@ const userGoalSound = new Audio('sounds/userGoalSound.mp3');
 const aiGoalSound = new Audio('sounds/aiGoalSound.mp3');
 const wallHitSound = new Audio('sounds/wallHitSound.mp3');
 
-const player = {
+const playerOne = {
     x: 10,
     y: cnvsLow.height / 2 - platformHeight / 2,
     width: platformWidth,
@@ -22,7 +22,7 @@ const player = {
     score: 0,
 }
 
-const ai = {
+const playerTwo = {
     x: cnvsLow.width - (platformWidth + 10),
     y: cnvsLow.height / 2 - platformHeight / 2,
     width: platformWidth,
@@ -41,36 +41,65 @@ const ball = {
 
 function getMousePos(evt) {
     let rect = cnvsLow.getBoundingClientRect();
-    if (player.y <= 0 && ((evt.clientY - rect.top) <= player.height / 2)) {
-        player.y = 0;
-    } else if (player.y >= cnvsLow.height - player.height && ((evt.clientY - rect.top) >= cnvsLow.height - player.height / 2)) {
-        player.y = cnvsLow.height - player.height;
+    if (playerOne.y <= 0 && ((evt.clientY - rect.top) <= playerOne.height / 2)) {
+        playerOne.y = 0;
+    } else if (playerOne.y >= cnvsLow.height - playerOne.height && ((evt.clientY - rect.top) >= cnvsLow.height - playerOne.height / 2)) {
+        playerOne.y = cnvsLow.height - playerOne.height;
     } else {
-        player.y = evt.clientY - rect.top - player.height / 2;
+        playerOne.y = evt.clientY - rect.top - playerOne.height / 2;
     }
 }
 
-let upArrowPressedByPlayer = false;
-let downArrowPressedByPlayer = false;
+let upArrowPressedByPlayerOne = false;
+let downArrowPressedByPlayerOne = false;
+let upArrowPressedByPlayerTwo = false;
+let downArrowPressedByPlayerTwo = false;
+
+function keyDownHandlerForTwo(event) {
+    switch (event.keyCode) {
+        case 38:
+            upArrowPressedByPlayerTwo = true;
+            break;
+        case 40:
+            downArrowPressedByPlayerTwo = true;
+            break;
+
+    }
+}
+
+// Отключение клавиш "вниз", "вверх"
+function keyUpHandlerForTwo(event) {
+    switch (event.keyCode) {
+        case 38:
+            upArrowPressedByPlayerTwo = false;
+            break;
+        case 40:
+            downArrowPressedByPlayerTwo = false;
+            break;
+    }
+}
 
 // Включение клавиш "W", "S"
-function keyDownHandler(event) {
-    console.log(event.keyCode);
+function keyDownHandlerForOne(event) {
     switch (event.keyCode) {
         case 87:
-            upArrowPressedByPlayer = true;
+            upArrowPressedByPlayerOne = true;
+            break;
         case 83:
-            downArrowPressedByPlayer = true;
+            downArrowPressedByPlayerOne = true;
+            break;
     }
 }
 
 // Отключение клавиш "W", "S"
-function keyUpHandler(event) {
+function keyUpHandlerForOne(event) {
     switch (event.keyCode) {
         case 87:
-            upArrowPressedByPlayer = false;
+            upArrowPressedByPlayerOne = false;
+            break;
         case 83:
-            downArrowPressedByPlayer = false;
+            downArrowPressedByPlayerOne = false;
+            break;
     }
 }
 
@@ -125,19 +154,19 @@ function drawBall(x, y, radius, color) {
 // Определение позиции курсора мыши
 function getMousePos(evt) {
     let rect = cnvsLow.getBoundingClientRect();
-    if (player.y <= 0 && ((evt.clientY - rect.top) <= player.height / 2)) {
-        player.y = 0;
-    } else if (player.y >= cnvsLow.height - player.height && ((evt.clientY - rect.top) >= cnvsLow.height - player.height / 2)) {
-        player.y = cnvsLow.height - player.height;
-    } else player.y = evt.clientY - rect.top - player.height / 2;
+    if (playerOne.y <= 0 && ((evt.clientY - rect.top) <= playerOne.height / 2)) {
+        playerOne.y = 0;
+    } else if (playerOne.y >= cnvsLow.height - playerOne.height && ((evt.clientY - rect.top) >= cnvsLow.height - playerOne.height / 2)) {
+        playerOne.y = cnvsLow.height - playerOne.height;
+    } else playerOne.y = evt.clientY - rect.top - playerOne.height / 2;
 }
 
 // Возврат игровых объектов в начальные положения
 function reset(scored) {
     ball.x = cnvsLow.width / 2;
     ball.y = cnvsLow.height / 2;
-    player.y = cnvsLow.height / 2 - platformHeight / 2;
-    player.y = cnvsLow.height / 2 - platformHeight / 2;
+    playerOne.y = cnvsLow.height / 2 - platformHeight / 2;
+    playerTwo.y = cnvsLow.height / 2 - platformHeight / 2;
     if (scored) {
         ball.velocityX = -5;
         ball.velocityY = -5;
@@ -163,22 +192,28 @@ function collisionDetect(curPlayer, ball) {
     return ball.left < curPlayer.right && ball.top < curPlayer.bottom && ball.right > curPlayer.left && ball.bottom > curPlayer.top;
 }
 
-// Изменение игрового процесса
+// Обновление изменений игрового процесса
 function update() {
-    if (upArrowPressedByPlayer && player.y > 0) {
-        player.y -= 12;
-    } else if (downArrowPressedByPlayer && (player.y < cnvsLow.height - player.height)) {
-        player.y += 12;
+    if (upArrowPressedByPlayerOne && playerOne.y > 0) {
+        playerOne.y -= 8;
+    } else if (downArrowPressedByPlayerOne && (playerOne.y < cnvsLow.height - playerOne.height)) {
+        playerOne.y += 8;
+    }
+
+    if (upArrowPressedByPlayerTwo && playerTwo.y > 0) {
+        playerTwo.y -= 8;
+    } else if (downArrowPressedByPlayerTwo && (playerTwo.y < cnvsLow.height - playerTwo.height)) {
+        playerTwo.y += 8;
     }
 
     let playerScore = false;
     if (ball.x - ball.radius < 0) {
         aiGoalSound.play();
-        ai.score++;
+        playerTwo.score++;
         reset(playerScore);
     } else if (ball.x > cnvsLow.width) {
         userGoalSound.play();
-        player.score++;
+        playerOne.score++;
         playerScore = true;
         reset(playerScore);
     }
@@ -191,9 +226,11 @@ function update() {
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
 
-    ai.y += ((ball.y - (ai.y + ai.height / 2))) * 0.1;
+    if (!twoPlayersPlay) {
+        playerTwo.y += (ball.y - (playerTwo.y + playerTwo.height / 2)) * 0.1;
+    }
 
-    let curPlayer = (ball.x < cnvsLow.width / 2) ? player : ai;
+    let curPlayer = (ball.x < cnvsLow.width / 2) ? playerOne : playerTwo;
 
     if (collisionDetect(curPlayer, ball)) {
         hitSound.play();
@@ -207,7 +244,7 @@ function update() {
         ball.velocityX = direction * ball.speed * Math.cos(angleRad);
         ball.velocityY = ball.speed * Math.sin(angleRad);
 
-        ball.speed += 0.3;
+        ball.speed += 5;
     }
 }
 
@@ -215,27 +252,71 @@ function update() {
 function render() {
     ctxUp.clearRect(0, 0, cnvsLow.width, cnvsLow.height);
 
-    drawScore(cnvsLow.width / 4 - 15, cnvsLow.height / 6, player.score);
+    drawScore(cnvsLow.width / 4 - 15, cnvsLow.height / 6, playerOne.score);
 
-    drawScore(3 * cnvsLow.width / 4 - 15, cnvsLow.height / 6, ai.score);
+    drawScore(3 * cnvsLow.width / 4 - 15, cnvsLow.height / 6, playerTwo.score);
 
-    drawPlatform(player.x, player.y, player.width, player.height);
+    drawPlatform(playerOne.x, playerOne.y, playerOne.width, playerOne.height);
 
-    drawPlatform(ai.x, ai.y, ai.width, ai.height);
+    drawPlatform(playerTwo.x, playerTwo.y, playerTwo.width, playerTwo.height);
 
     drawBall(ball.x, ball.y, ball.radius);
 }
 
+let myAnim;
+
+// Игровой цикл
 function loop() {
     update();
     render();
-    requestAnimationFrame(loop);
+    myAnim = requestAnimationFrame(loop);
+}
+// Обработчики событий нажатия клавиш
+function movementForPlayers(twoPlayersPlay) {
+    if (twoPlayersPlay) {
+        addEventListener('keydown', keyDownHandlerForTwo);
+        addEventListener('keyup', keyUpHandlerForTwo);
+
+        removeEventListener('mousemove', getMousePos);
+    } else {
+        addEventListener('mousemove', getMousePos);
+
+        removeEventListener('keydown', keyDownHandlerForTwo);
+        removeEventListener('keyup', keyUpHandlerForTwo);
+    }
 }
 
-addEventListener('mousemove', getMousePos);
-addEventListener('keydown', keyDownHandler);
-addEventListener('keyup', keyUpHandler);
+let twoPlayersPlay;
+
+const twPlrsBttn = document.querySelector('#two-players-button');
+const aiBttn = document.querySelector('#ai-button');
+
+addEventListener('keydown', keyDownHandlerForOne);
+addEventListener('keyup', keyUpHandlerForOne);
+
+twPlrsBttn.onclick = function () {
+    twPlrsBttn.setAttribute('disabled', true);
+    aiBttn.removeAttribute('disabled');
+    twoPlayersPlay = true;
+    playerOne.score = 0;
+    playerTwo.score = 0;
+    cancelAnimationFrame(myAnim);
+    reset();
+    movementForPlayers(twoPlayersPlay);
+    loop();
+}
+
+// Обработка нажатия кнопки "Одиночная игра"
+aiBttn.onclick = function () {
+    aiBttn.setAttribute('disabled', true);
+    twPlrsBttn.removeAttribute('disabled');
+    twoPlayersPlay = false;
+    playerOne.score = 0;
+    playerTwo.score = 0;
+    cancelAnimationFrame(myAnim);
+    reset();
+    movementForPlayers(twoPlayersPlay);
+    loop();
+}
 
 drawField();
-
-loop();

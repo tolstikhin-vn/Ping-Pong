@@ -9,7 +9,7 @@ const ctxUp = canvasUp.getContext('2d');
 const hitSound = new Audio('sounds/hitSound.mp3');
 const userGoalSound = new Audio('sounds/userGoalSound.mp3');
 const aiGoalSound = new Audio('sounds/aiGoalSound.mp3');
-const wallHitSound = new Audio('sounds/wallHit.mp3');
+const wallHitSound = new Audio('sounds/wallHitSound.mp3');
 
 const coordX = 10;
 const platformWidth = 15;
@@ -234,7 +234,7 @@ function update() {
     ball.y += ball.velocityY;
 
     if (!twoPlayersPlay) {
-        playerTwo.y += (ball.y - (playerTwo.y + playerTwo.height / 2)) * 0.1;
+        playerTwo.y += (ball.y - (playerTwo.y + playerTwo.height / 2)) * 0.13;
     }
 
     let player = (ball.x < canvasLow.width / 2) ? playerOne : playerTwo;
@@ -282,9 +282,9 @@ function movementForPlayers(twoPlayersPlay) {
         addEventListener('keydown', keyDownHandlerForTwo);
         addEventListener('keyup', keyUpHandlerForTwo);
 
-        removeEventListener('mousemove', getMousePos);
+        removeEventListener('pointermove', getMousePos);
     } else {
-        addEventListener('mousemove', getMousePos);
+        addEventListener('pointermove', getMousePos);
 
         removeEventListener('keydown', keyDownHandlerForTwo);
         removeEventListener('keyup', keyUpHandlerForTwo);

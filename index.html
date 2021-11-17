@@ -3,42 +3,38 @@
    <head>
       <meta charset="UTF-8" />
       <link href="style.css" rel="stylesheet" />
+      <link rel="icon" href="img/favicon.png" />
       <script src="script.js" defer></script>
       <title>Ping Pong</title>
    </head>
-
    <body>
-      <div class="button-panel">
-         <button type="button" id="two-players-button">Два игрока</button>
-         <button type="button" id="ai-button">Одиночная игра</button>
-         <button type="button" id="restart">Рестарт</button>
-         <button type="button" id="stop-start">Стоп</button>
+      <div class="panel">
+         <button id="two-players-button">Два игрока</button>
+         <button id="ai-button">Одиночная игра</button>
+         <button id="restart">Рестарт</button>
+         <button id="stop-start">Стоп</button>
          <div class="control-panel">
-            <label for="num" id="num-control-id"
-               >ДО СКОЛЬКИ ГОЛОВ ИГРАЕМ?</label
-            >
-            <input
-               type="number"
-               class="num-control"
-               id="num"
-               min="1"
-               placeholder="11"
-            />
+            <label for="num-input" id="num-label">
+               До скольки голов играем?
+            </label>
+            <input type="number" id="num-input" min="1" placeholder="11" />
          </div>
       </div>
-      <div class="color-panel-one">
-         <label for="сolor-one" id="label-one">ЦВЕТ 1 ИГРОКА</label>
-         <input type="color" value="#FFFFFF" id="color-one" />
-      </div>
-      <div class="canvas-container">
-         <!-- canvas для отрисовки фона -->
-         <canvas id="layer1" width="1000" height="600"></canvas>
-         <!-- canvas для отрисовки игровых объектов -->
-         <canvas id="layer2" width="1000" height="600"></canvas>
-      </div>
-      <div class="color-panel-two">
-         <input type="color" value="#FFFFFF" id="color-two" />
-         <label for="сolor-two" id="label-two">ЦВЕТ 2 ИГРОКА</label>
+      <div class="body-container">
+         <div class="color-panel-one">
+            <img src="img/color.ico" alt="" />
+            <input type="color" value="#FFFFFF" id="color-one" />
+         </div>
+         <div class="canvas-container">
+            <!-- canvas для отрисовки фона -->
+            <canvas id="layer1" width="1000" height="600"></canvas>
+            <!-- canvas для отрисовки игровых объектов -->
+            <canvas id="layer2" width="1000" height="600"></canvas>
+         </div>
+         <div class="color-panel-two">
+            <img src="img/color.ico" alt="" />
+            <input type="color" value="#FFFFFF" id="color-two" />
+         </div>
       </div>
    </body>
 </html>

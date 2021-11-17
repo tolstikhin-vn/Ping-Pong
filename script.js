@@ -153,7 +153,6 @@ function keyUpHandlerForOne(event) {
 
 // Возврат игровых объектов в начальные положения
 function reset(scored, resetScore) {
-
     ball.x = canvasLow.width / 2;
     ball.y = canvasLow.height / 2;
     playerOne.y = canvasLow.height / 2 - platformHeight / 2;
@@ -282,9 +281,9 @@ function movementForPlayers(twoPlayersPlay) {
         addEventListener('keydown', keyDownHandlerForTwo);
         addEventListener('keyup', keyUpHandlerForTwo);
 
-        removeEventListener('pointermove', getMousePos);
+        removeEventListener('mousemove', getMousePos);
     } else {
-        addEventListener('pointermove', getMousePos);
+        addEventListener('mousemove', getMousePos);
 
         removeEventListener('keydown', keyDownHandlerForTwo);
         removeEventListener('keyup', keyUpHandlerForTwo);
@@ -316,7 +315,7 @@ stpStrtBttn.setAttribute('disabled', true);
 let twPlrsBttnPressed, scoreNumber = 11;
 
 // Получение от пользователя ограничения на количество голов
-document.getElementById('num').oninput =
+document.getElementById('num-input').oninput =
     function () {
         scoreNumber = this.value;
     }

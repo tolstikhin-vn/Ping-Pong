@@ -104,6 +104,7 @@ body {
 #color-two,
 #color-one {
    -webkit-appearance: none;
+   border: 0.5px solid #000;
    cursor: pointer;
    width: 40px;
    height: 40px;

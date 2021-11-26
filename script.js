@@ -19,6 +19,7 @@ const ballRadius = 12;
 const ballSpeed = 8;
 const defVelosityX = 5;
 const defVelosityY = 5;
+const whiteColor = '#fff';
 
 const playerOne = {
     x: coordX,
@@ -43,12 +44,12 @@ const ball = {
     speed: ballSpeed,
     velocityX: defVelosityX,
     velocityY: defVelosityY,
-    color: '#fff'
+    color: whiteColor,
 };
 
 // Отрисовка игрового поля
 function drawField() {
-    ctxLow.strokeStyle = '#fff';
+    ctxLow.strokeStyle = whiteColor;
 
     // Горизонтальная линия, проходящая через середину поля
     ctxLow.lineWidth = 3;
@@ -75,7 +76,7 @@ function drawField() {
 
 // Отрисовка игрового счета
 function drawScore(x, y, score) {
-    ctxUp.fillStyle = '#fff';
+    ctxUp.fillStyle = whiteColor;
     ctxUp.font = '70px fantasy';
     ctxUp.fillText(score, x, y);
 }
@@ -106,18 +107,15 @@ function getMousePos(event) {
     } else playerOne.y = event.clientY - rect.top - playerOne.height / 2;
 }
 
-let upArrowPressedByPlayerOne = false;
-let downArrowPressedByPlayerOne = false;
-let upArrowPressedByPlayerTwo = false;
-let downArrowPressedByPlayerTwo = false;
+let upArrowByOne = false, downArrowByOne = false, upArrowByTwo = false, downArrowByTwo = false;
 
 // Включение нажатия клавиш "вниз", "вверх"
 function keyDownHandlerForTwo(event) {
     switch (event.keyCode) {
         case 38:
-            upArrowPressedByPlayerTwo = true;
+            upArrowByTwo = true;
         case 40:
-            downArrowPressedByPlayerTwo = true;
+            downArrowByTwo = true;
     }
 }
 
@@ -125,9 +123,9 @@ function keyDownHandlerForTwo(event) {
 function keyUpHandlerForTwo(event) {
     switch (event.keyCode) {
         case 38:
-            upArrowPressedByPlayerTwo = false;
+            upArrowByTwo = false;
         case 40:
-            downArrowPressedByPlayerTwo = false;
+            downArrowByTwo = false;
     }
 }
 
@@ -135,9 +133,9 @@ function keyUpHandlerForTwo(event) {
 function keyDownHandlerForOne(event) {
     switch (event.keyCode) {
         case 87:
-            upArrowPressedByPlayerOne = true;
+            upArrowByOne = true;
         case 83:
-            downArrowPressedByPlayerOne = true;
+            downArrowByOne = true;
     }
 }
 
@@ -145,9 +143,9 @@ function keyDownHandlerForOne(event) {
 function keyUpHandlerForOne(event) {
     switch (event.keyCode) {
         case 87:
-            upArrowPressedByPlayerOne = false;
+            upArrowByOne = false;
         case 83:
-            downArrowPressedByPlayerOne = false;
+            downArrowByOne = false;
     }
 }
 
@@ -187,18 +185,19 @@ function collisionDetect(player, ball) {
 }
 
 let twoPlayersPlay, resetScore = false, playerOneScored = false;
+
 // Обновление изменений игрового процесса
 function update() {
-    if (upArrowPressedByPlayerOne && playerOne.y > 0) {
-        playerOne.y -= 8;
-    } else if (downArrowPressedByPlayerOne && (playerOne.y < canvasLow.height - playerOne.height)) {
-        playerOne.y += 8;
+    if (upArrowByOne && playerOne.y > 0) {
+        playerOne.y -= 10;
+    } else if (downArrowByOne && (playerOne.y < canvasLow.height - playerOne.height)) {
+        playerOne.y += 10;
     }
 
-    if (upArrowPressedByPlayerTwo && playerTwo.y > 0) {
-        playerTwo.y -= 8;
-    } else if (downArrowPressedByPlayerTwo && (playerTwo.y < canvasLow.height - playerTwo.height)) {
-        playerTwo.y += 8;
+    if (upArrowByTwo && playerTwo.y > 0) {
+        playerTwo.y -= 10;
+    } else if (downArrowByTwo && (playerTwo.y < canvasLow.height - playerTwo.height)) {
+        playerTwo.y += 10;
     }
 
     if (ball.y + ball.radius >= canvasLow.height || ball.y - ball.radius <= 0) {
@@ -212,7 +211,7 @@ function update() {
         playerOneScored = true;
         userGoalSound.play();
         playerOne.score += 1;
-        if (playerOne.score == scoreNumber) {
+        if (playerOne.score === scoreNumber) {
             resetScore = true;
             alert("Выиграл игрок 1!");
         }
@@ -222,7 +221,7 @@ function update() {
     if (ball.x - ball.radius <= 0) {
         aiGoalSound.play();
         playerTwo.score += 1;
-        if (playerTwo.score == scoreNumber) {
+        if (playerTwo.score === scoreNumber) {
             resetScore = true;
             alert("Выиграл игрок 2!");
         }
@@ -324,14 +323,12 @@ let playerOneColor = '#fff', playerTwoColor = '#fff';
 // Получение цвета платформы для игрока 1
 document.getElementById("color-one").oninput =
     function () {
-        console.log(this.value);
         playerOneColor = this.value;
     }
 
 //Поулчение цвета платформы для игрока 2
 document.getElementById("color-two").oninput =
     function () {
-        console.log(this.value);
         playerTwoColor = this.value;
     }
 
@@ -384,7 +381,7 @@ rstrtBttn.onclick = function () {
 
 // Обработка нажатия кнопки "Стоп/Старт"
 stpStrtBttn.onclick = function () {
-    if (this.innerHTML == "Старт") {
+    if (this.innerHTML === "Старт") {
         this.innerHTML = "Стоп";
     } else {
         this.innerHTML = "Старт";
